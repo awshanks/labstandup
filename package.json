@@ -1,0 +1,19 @@
+{
+  "name": "labstandup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "alexa-sdk": "^1.0.12",
+    "aws-sdk": "^2.110.0",
+    "es6-promisify": "^5.0.0",
+    "sanitize-html": "^1.14.1",
+    "striptags": "^3.0.1",
+    "wpapi": "^1.0.3"
+  }
+}
