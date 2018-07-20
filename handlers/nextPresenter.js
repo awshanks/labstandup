@@ -40,18 +40,26 @@ const nextPresenter = {
                         nextPresentersName = namesLeft[Math.floor(Math.random() * namesLeft.length)];
                         outputMessage = this.t("NEXT_PRESENTER_MESSAGE") + nextPresentersName;
                     }
+                    else {
+                        output = 'No names found, try again or reset name list';
+                    }
+                }
+                else {
+                    output = 'No names found, try again or reset name list';
+                }
+            })
+            .then(result => {
+                if (output !== 'No names found, try again or reset name list') {
 
                     //write back to table that the person has already been chosen (true)
                     var params = {
                         TableName: nameList,
                         Key: {
-                            "name": nextPresentersName[0],
+                            "name": nextPresentersName,
                         },
                         UpdateExpression: "set chosen = :c",
-                        ConditionExpression: "name = :name",
                         ExpressionAttributeValues: {
                             ":c": true,
-                            "name": nextPresentersName[0]
                         },
                         ReturnValues: "UPDATED_NEW"
                     };
@@ -60,18 +68,20 @@ const nextPresenter = {
 
                     dbUpdate(params)
                         .then(data => {
-                            //success
-                            console.log(data);
+                            //success output the next speaker name
+                            console.log("UP success", data);
+                            this.emit(':tellWithCard', outputMessage, this.t("SKILL_NAME"), outputMessage);
                         })
                         .catch(err => {
                             console.log(params);
-                            console.log(err, "error updating person");
+                            console.log("UP failure", err);
                         });
                 }
                 else {
-                    output = 'No names found, try again or reset name list';
+                    //inform the user there are no unchosen presenters left and reset
+                    outputMessage = this.t(output);
+                    this.emit(':tellWithCard', outputMessage, this.t("SKILL_NAME"), outputMessage);
                 }
-                this.emit(':tellWithCard', outputMessage, this.t("SKILL_NAME"), outputMessage);
             })
             .catch(err => {
                 console.error(err);
