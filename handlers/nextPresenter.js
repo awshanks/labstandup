@@ -26,30 +26,57 @@ const nextPresenter = {
 
         let namesLeft = [];
 
+        let numberToIncrease;
+
         dbScan(dynamoParams)
             .then(data => {
 
                 if (data.Items && data.Items.length) {
-                    //loop over and create a new array with only persons who have not been chosen already
-                    data.Items.forEach(item => {
-                        if (!item.chosen) {
-                            namesLeft.push(item.name);
+                    //find the different values of timeschosen in the array
+                    var times = [];
+
+                    let unique = [...new Set(data.Items.map(item => item.timeschosen))];
+
+                    if(unique && unique.length > 1) {
+                        //get the min number
+                        const smallestNumber =  Math.min(...unique);
+                        numberToIncrease = smallestNumber;
+
+                        data.Items.forEach(item => {
+                            if (item.timeschosen === smallestNumber) {
+                                namesLeft.push(item.name);
+                            }
+                        });
+
+                        if (namesLeft && namesLeft.length > 0) {
+                            nextPresentersName = namesLeft[Math.floor(Math.random() * namesLeft.length)];
+                            outputMessage = this.t("NEXT_PRESENTER_MESSAGE") + nextPresentersName;
                         }
-                    });
-                    if (namesLeft && namesLeft.length > 0) {
-                        nextPresentersName = namesLeft[Math.floor(Math.random() * namesLeft.length)];
-                        outputMessage = this.t("NEXT_PRESENTER_MESSAGE") + nextPresentersName;
+                        else {
+                            output = 'No names found, try again';
+                        }
                     }
                     else {
-                        output = 'No names found, try again or reset name list';
+                        //everyone has been chosen the same number of times, so just use the full list
+                        if (data.Items.length > 0) {
+
+                            numberToIncrease = data.Items[0].timeschosen;
+                            nextPresentersName = data.Items[Math.floor(Math.random() * data.Items.length)].name;
+                            outputMessage = this.t("NEXT_PRESENTER_MESSAGE") + nextPresentersName;
+                        }
+                        else {
+                            output = 'No names found, try again';
+                        }
                     }
                 }
                 else {
-                    output = 'No names found, try again or reset name list';
+                    output = 'No names found, try again';
                 }
             })
-            .then(result => {
-                if (output !== 'No names found, try again or reset name list') {
+            .then(() => {
+                if (output !== 'No names found, try again') {
+
+                    numberToIncrease += 1;
 
                     //write back to table that the person has already been chosen (true)
                     var params = {
@@ -57,24 +84,20 @@ const nextPresenter = {
                         Key: {
                             "name": nextPresentersName,
                         },
-                        UpdateExpression: "set chosen = :c",
+                        UpdateExpression: "set timeschosen = :n",
                         ExpressionAttributeValues: {
-                            ":c": true,
+                            ":n": numberToIncrease,
                         },
                         ReturnValues: "UPDATED_NEW"
                     };
 
-                    console.log("heres the input", params);
-
                     dbUpdate(params)
-                        .then(data => {
+                        .then(() => {
                             //success output the next speaker name
-                            console.log("UP success", data);
                             this.emit(':tellWithCard', outputMessage, this.t("SKILL_NAME"), outputMessage);
                         })
                         .catch(err => {
-                            console.log(params);
-                            console.log("UP failure", err);
+                            console.log("update failure", err);
                         });
                 }
                 else {
