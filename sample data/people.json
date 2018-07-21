@@ -1,0 +1,28 @@
+{
+  "nameList": [
+    {
+      "PutRequest": {
+        "Item": {
+          "name": {
+            "S": "Name One"
+          },
+          "timeschosen": {
+            "N": "0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "name": {
+            "S": "Name 2"
+          },
+          "timeschosen": {
+            "N": "0"
+          }
+        }
+      }
+    }
+  ]
+}
