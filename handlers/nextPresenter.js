@@ -9,9 +9,6 @@ const nameList = 'nameList';
 //promisify database commands
 const dbScan = promisify(docClient.scan, docClient);
 const dbUpdate = promisify(docClient.update, docClient);
-// const dbPut = promisify(docClient.put, docClient);
-// const dbGet = promisify(docClient.get, docClient);
-// const dbDelete = promisify(docClient.delete, docClient);
 
 const nextPresenter = {
     'NextPresenterIntent'() {

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "zip": "zip -r upload.zip .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./tests/integration_tests.js | tap-spec"
   },
   "author": "",
   "license": "ISC",
