@@ -15,6 +15,7 @@ Then configure: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-gettin
 
 To load the database upload via aws console with the following .json format (example file included in this repo)
 
+
 `{
   "nameList": [
     {
