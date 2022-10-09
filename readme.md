@@ -3,7 +3,7 @@
 This AWS lambda function proved the name of person to host the next lab / team stand up and is invoked by an Alexa Skill with the following utterances:
 
 "who's turn is it next"
-"who will take tomorrows stand up"
+"who will take tomorrow's stand up"
 "who will be the next presenter"
 
 **DynamoDB**
